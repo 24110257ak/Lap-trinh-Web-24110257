@@ -22,7 +22,7 @@ public class User implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "username", columnDefinition = "NVARCHAR(50) NOT NULL UNIQUE")
+    @Column(name = "username", columnDefinition = "NVARCHAR(50) NOT NULL", unique = true)
     private String username;
 
     @Column(name = "password", columnDefinition = "NVARCHAR(255) NOT NULL")
