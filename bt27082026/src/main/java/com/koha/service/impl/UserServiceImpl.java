@@ -71,3 +71,4 @@ public class UserServiceImpl implements IUserService {
         return userDao.findAll();
     }
 }
+

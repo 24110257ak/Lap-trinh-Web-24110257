@@ -58,3 +58,4 @@ public class DownloadImageController extends HttpServlet {
         resp.getWriter().write(defaultSvg);
     }
 }
+

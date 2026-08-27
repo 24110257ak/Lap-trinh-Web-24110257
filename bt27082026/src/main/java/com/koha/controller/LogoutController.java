@@ -25,3 +25,4 @@ public class LogoutController extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + "/login");
     }
 }
+

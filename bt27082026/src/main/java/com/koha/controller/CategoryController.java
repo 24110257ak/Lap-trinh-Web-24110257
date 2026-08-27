@@ -234,3 +234,4 @@ public class CategoryController extends HttpServlet {
         Files.deleteIfExists(path);
     }
 }
+
