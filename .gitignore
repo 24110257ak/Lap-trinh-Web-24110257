@@ -26,3 +26,7 @@ Thumbs.db
 # Ignore instruction file as requested
 bt27082026/instruction.txt
 **/instruction.txt
+
+# Ignore template directory as requested
+template/
+**/template/
