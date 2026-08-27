@@ -1,0 +1,28 @@
+# Target and build directories
+target/
+**/target/
+
+# IDE and Editor files
+.settings/
+**/.settings/
+.classpath
+**/.classpath
+.project
+**/.project
+.vscode/
+**/.vscode/
+.idea/
+**/.idea/
+*.iml
+
+# OS and compressed archives
+.DS_Store
+Thumbs.db
+*.rar
+*.zip
+.BTVN/
+**/.BTVN/
+
+# Ignore instruction file as requested
+bt27082026/instruction.txt
+**/instruction.txt

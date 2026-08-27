@@ -1,11 +1,11 @@
--- Tao Database bt25082026 neu chua co
-IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'bt25082026')
+﻿-- Tao Database ltweb neu chua co
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'ltweb')
 BEGIN
-    CREATE DATABASE bt25082026;
+    CREATE DATABASE ltweb;
 END
 GO
 
-USE bt25082026;
+USE ltweb;
 GO
 
 -- 1. Tao bang users neu chua co
