@@ -1,11 +1,11 @@
-package vn.iotstar.service.impl;
+package com.koha.service.impl;
 
 import java.util.List;
 
-import vn.iotstar.dao.IUserDao;
-import vn.iotstar.dao.impl.UserDao;
-import vn.iotstar.entity.User;
-import vn.iotstar.service.IUserService;
+import com.koha.dao.IUserDao;
+import com.koha.dao.impl.UserDao;
+import com.koha.entity.User;
+import com.koha.service.IUserService;
 
 public class UserServiceImpl implements IUserService {
 

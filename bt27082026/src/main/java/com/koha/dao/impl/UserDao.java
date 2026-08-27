@@ -1,13 +1,13 @@
-package vn.iotstar.dao.impl;
+package com.koha.dao.impl;
 
 import java.util.List;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
-import vn.iotstar.config.JpaConfig;
-import vn.iotstar.dao.IUserDao;
-import vn.iotstar.entity.User;
+import com.koha.config.JpaConfig;
+import com.koha.dao.IUserDao;
+import com.koha.entity.User;
 
 public class UserDao implements IUserDao {
 

@@ -1,7 +1,7 @@
-package vn.iotstar.service;
+package com.koha.service;
 
 import java.util.List;
-import vn.iotstar.entity.User;
+import com.koha.entity.User;
 
 public interface IUserService {
 

@@ -1,4 +1,4 @@
-package vn.iotstar.config;
+package com.koha.config;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;

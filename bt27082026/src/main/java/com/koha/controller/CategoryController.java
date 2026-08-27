@@ -1,4 +1,4 @@
-package vn.iotstar.controller;
+package com.koha.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,10 +14,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-import vn.iotstar.entity.Category;
-import vn.iotstar.service.ICategoryService;
-import vn.iotstar.service.impl.CategoryServiceImpl;
-import vn.iotstar.util.Constant;
+import com.koha.entity.Category;
+import com.koha.service.ICategoryService;
+import com.koha.service.impl.CategoryServiceImpl;
+import com.koha.util.Constant;
 
 @MultipartConfig(
     fileSizeThreshold = 1024 * 1024 * 2, // 2MB
@@ -205,7 +205,7 @@ public class CategoryController extends HttpServlet {
                         try {
                             deleteFile(uploadPath + File.separator + fileold);
                         } catch (Exception ex) {
-                            // Bỏ qua lỗi xóa nếu file không tồn tại
+                            // Bỏ qua nếu file không tồn tại
                         }
                     }
 

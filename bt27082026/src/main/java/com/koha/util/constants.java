@@ -1,4 +1,4 @@
-package vn.iotstar.util;
+package com.koha.util;
 
 public class constants {
     public static final String DIR = Constant.DIR;

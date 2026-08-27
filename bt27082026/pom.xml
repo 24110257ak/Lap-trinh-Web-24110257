@@ -55,24 +55,21 @@
             <version>12.8.1.jre11</version>
         </dependency>
 
-        <!-- 5. Hibernate Core (JPA Provider) -->
+        <!-- Source: https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>6.6.1.Final</version>
+            <version>7.4.6.Final</version>
+            <type>pom</type>
             <scope>compile</scope>
         </dependency>
 
-        <!-- 6. Hibernate Validator & Jakarta Validation -->
+        <!-- Source: https://mvnrepository.com/artifact/org.hibernate/hibernate-validator -->
         <dependency>
-            <groupId>org.hibernate.validator</groupId>
+            <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>8.0.1.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.validation</groupId>
-            <artifactId>jakarta.validation-api</artifactId>
-            <version>3.1.0</version>
+            <version>8.0.5.Final</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- 7. Lombok (Tự động sinh getter/setter/constructor) -->

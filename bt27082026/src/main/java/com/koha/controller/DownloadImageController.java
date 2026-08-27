@@ -1,4 +1,4 @@
-package vn.iotstar.controller;
+package com.koha.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import vn.iotstar.util.Constant;
+import com.koha.util.Constant;
 
 @WebServlet(urlPatterns = {"/image"})
 public class DownloadImageController extends HttpServlet {

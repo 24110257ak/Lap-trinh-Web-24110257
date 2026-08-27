@@ -5,8 +5,8 @@
 
     <persistence-unit name="jpa-hibernate-mysql" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>vn.iotstar.entity.Category</class>
-        <class>vn.iotstar.entity.User</class>
+        <class>com.koha.entity.Category</class>
+        <class>com.koha.entity.User</class>
 
         <properties>
             <!-- Kết nối MS SQL Server (Database bt27082026) -->
@@ -25,8 +25,8 @@
 
     <persistence-unit name="dataSource" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>vn.iotstar.entity.Category</class>
-        <class>vn.iotstar.entity.User</class>
+        <class>com.koha.entity.Category</class>
+        <class>com.koha.entity.User</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=bt27082026;encrypt=true;trustServerCertificate=true;" />

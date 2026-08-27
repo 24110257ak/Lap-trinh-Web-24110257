@@ -1,4 +1,4 @@
-package vn.iotstar.entity;
+package com.koha.entity;
 
 import java.io.Serializable;
 
@@ -82,7 +82,7 @@ public class Category implements Serializable {
         this.status = status;
     }
 
-    // Additional aliases for backward compatibility with 14_HD_Servlet_JDBC_CRUD
+    // Additional aliases for backward compatibility
     public int getId() {
         return categoryId;
     }

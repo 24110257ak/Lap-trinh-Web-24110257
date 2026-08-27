@@ -1,4 +1,4 @@
-package vn.iotstar.controller;
+package com.koha.controller;
 
 import java.io.IOException;
 
@@ -9,9 +9,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import vn.iotstar.entity.User;
-import vn.iotstar.service.IUserService;
-import vn.iotstar.service.impl.UserServiceImpl;
+import com.koha.entity.User;
+import com.koha.service.IUserService;
+import com.koha.service.impl.UserServiceImpl;
 
 @WebServlet(urlPatterns = {"/login"})
 public class LoginController extends HttpServlet {

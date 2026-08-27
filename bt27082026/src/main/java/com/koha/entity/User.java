@@ -1,4 +1,4 @@
-package vn.iotstar.entity;
+package com.koha.entity;
 
 import java.io.Serializable;
 

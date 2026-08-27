@@ -1,4 +1,4 @@
-package vn.iotstar.dao.impl;
+package com.koha.dao.impl;
 
 import java.util.List;
 
@@ -6,9 +6,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
-import vn.iotstar.config.JpaConfig;
-import vn.iotstar.dao.ICategoryDao;
-import vn.iotstar.entity.Category;
+import com.koha.config.JpaConfig;
+import com.koha.dao.ICategoryDao;
+import com.koha.entity.Category;
 
 public class CategoryDao implements ICategoryDao {
 

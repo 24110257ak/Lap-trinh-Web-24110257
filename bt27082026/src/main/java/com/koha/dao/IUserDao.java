@@ -1,7 +1,7 @@
-package vn.iotstar.dao;
+package com.koha.dao;
 
 import java.util.List;
-import vn.iotstar.entity.User;
+import com.koha.entity.User;
 
 public interface IUserDao {
 

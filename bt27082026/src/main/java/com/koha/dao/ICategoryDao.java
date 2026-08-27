@@ -1,7 +1,7 @@
-package vn.iotstar.dao;
+package com.koha.dao;
 
 import java.util.List;
-import vn.iotstar.entity.Category;
+import com.koha.entity.Category;
 
 public interface ICategoryDao {
 
