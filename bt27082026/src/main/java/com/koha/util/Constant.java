@@ -4,7 +4,8 @@ import java.io.File;
 
 public class Constant {
 
-    public static final String DIR = "D:/upload";
+    // Thư mục lưu trữ upload nằm bên trong workspace
+    public static final String DIR = System.getProperty("upload.dir", "d:/lap_trinh_web/bt27082026/uploads");
     public static final String CATEGORY_UPLOAD_DIR = DIR + "/category";
     public static final String PRODUCT_UPLOAD_DIR = DIR + "/product";
     public static final String DEFAULT_FILENAME = "default.file";
