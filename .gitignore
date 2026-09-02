@@ -24,7 +24,6 @@ Thumbs.db
 **/.BTVN/
 
 # Ignore instruction file as requested
-bt27082026/instruction.txt
 **/instruction.txt
 
 # Ignore template directory as requested
@@ -35,12 +34,12 @@ template/
 bt25082026/WEB-INF/
 bt25082026/views/
 bt25082026/views_bootstrap/
-bt27082026/WEB-INF/
-bt27082026/index.jsp
-bt27082026/views/
-bt27082026/views_bootstrap/
+bt27082026/
+bt2 + 3(27-8-2026-6-9-2026)/WEB-INF/
+bt2 + 3(27-8-2026-6-9-2026)/index.jsp
+bt2 + 3(27-8-2026-6-9-2026)/views/
+bt2 + 3(27-8-2026-6-9-2026)/views_bootstrap/
 
 # Upload directory inside workspace
 uploads/
 **/uploads/
-
