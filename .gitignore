@@ -39,3 +39,8 @@ bt27082026/WEB-INF/
 bt27082026/index.jsp
 bt27082026/views/
 bt27082026/views_bootstrap/
+
+# Upload directory inside workspace
+uploads/
+**/uploads/
+

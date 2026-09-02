@@ -1,129 +1,65 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chỉnh Sửa Sản Phẩm #${product.productId} - Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        .preview-img { max-height: 120px; border-radius: 8px; border: 1px solid #ced4da; padding: 4px; background: #fff; }
-    </style>
+    <title>Chỉnh sửa sản phẩm</title>
 </head>
-<body class="bg-light">
+<body>
+    <h2>Chỉnh sửa sản phẩm (JPA 3.0 & Hibernate 6.6)</h2>
+    <form action="<c:url value="/admin/product/update"/>" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="productId" value="${product.productId}">
 
-    <!-- Header Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm py-2">
-        <div class="container">
-            <a class="navbar-brand fw-bold text-primary fs-4" href="${pageContext.request.contextPath}/home">
-                <i class="fa-solid fa-store me-2"></i>Koha Store Admin
-            </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/home"><i class="fa-solid fa-house me-1"></i> Trang chủ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active fw-bold" href="${pageContext.request.contextPath}/admin/products"><i class="fa-solid fa-box me-1"></i> Quản lý Sản Phẩm</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/admin/categories"><i class="fa-solid fa-tags me-1"></i> Quản lý Danh Mục</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+        <label for="productName">Product name (Tên sản phẩm):</label><br>
+        <input type="text" id="productName" name="productName" value="${product.productName}" required style="width: 380px; padding: 5px;"><br><br>
 
-    <div class="container my-4" style="max-width: 800px;">
-        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
-            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-                <h3 class="fw-bold text-primary mb-0"><i class="fa-solid fa-pen-to-square me-2"></i>Cập Nhật Sản Phẩm #${product.productId}</h3>
-                <a href="${pageContext.request.contextPath}/admin/products" class="btn btn-outline-secondary btn-sm">
-                    <i class="fa-solid fa-arrow-left me-1"></i> Quay lại
-                </a>
-            </div>
+        <label for="categoryId">Category (Danh mục):</label><br>
+        <select id="categoryId" name="categoryId" required style="width: 250px; padding: 5px;">
+            <c:forEach items="${categories}" var="c">
+                <option value="${c.categoryId}" ${product.category.categoryId == c.categoryId ? 'selected' : ''}>
+                    ${c.categoryname}
+                </option>
+            </c:forEach>
+        </select><br><br>
 
-            <!-- Form upload Multipart cập nhật sản phẩm -->
-            <form action="${pageContext.request.contextPath}/admin/product/update" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="productId" value="${product.productId}">
+        <label for="price">Price (Đơn giá VNĐ):</label><br>
+        <input type="number" id="price" name="price" value="${product.price}" min="0" step="1000" required style="width: 250px; padding: 5px;"><br><br>
 
-                <div class="row g-3">
-                    <div class="col-md-8">
-                        <label class="form-label fw-semibold">Tên sản phẩm: <span class="text-danger">*</span></label>
-                        <input type="text" name="productName" value="${product.productName}" class="form-control" required>
-                    </div>
+        <label for="quantity">Quantity (Số lượng tồn kho):</label><br>
+        <input type="number" id="quantity" name="quantity" value="${product.quantity}" min="0" required style="width: 150px; padding: 5px;"><br><br>
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Danh mục: <span class="text-danger">*</span></label>
-                        <select name="categoryId" class="form-select" required>
-                            <c:forEach items="${categories}" var="c">
-                                <option value="${c.categoryId}" ${product.category.categoryId == c.categoryId ? 'selected' : ''}>
-                                    ${c.categoryname}
-                                </option>
-                            </c:forEach>
-                        </select>
-                    </div>
+        <label>Ảnh hiện tại:</label><br>
+        <c:choose>
+            <c:when test="${not empty product.images and (product.images.startsWith('http://') or product.images.startsWith('https://'))}">
+                <c:url value="${product.images}" var="imgUrl"></c:url>
+            </c:when>
+            <c:otherwise>
+                <c:url value="/image?fname=${product.images}" var="imgUrl"></c:url>
+            </c:otherwise>
+        </c:choose>
+        <img height="100" width="140" src="${imgUrl}" alt="${product.productName}" style="object-fit: contain; border: 1px solid #ccc; padding: 3px;" /><br><br>
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Đơn giá (VNĐ): <span class="text-danger">*</span></label>
-                        <input type="number" name="price" value="${product.price}" class="form-control" min="0" step="1000" required>
-                    </div>
+        <label for="imageLink">Link images (Nhập liên kết ảnh online mới nếu có):</label><br>
+        <input type="text" id="imageLink" name="imageLink" value="${product.images.startsWith('http') ? product.images : ''}" placeholder="https://..." style="width: 380px; padding: 5px;"><br><br>
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Số lượng tồn kho: <span class="text-danger">*</span></label>
-                        <input type="number" name="quantity" value="${product.quantity}" class="form-control" min="0" required>
-                    </div>
+        <label for="imageFile">Upload images (Tải ảnh mới từ máy để thay thế):</label><br>
+        <input type="file" id="imageFile" name="imageFile"><br><br>
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Trạng thái:</label>
-                        <select name="status" class="form-select">
-                            <option value="1" ${product.status == 1 ? 'selected' : ''}>Đang kinh doanh</option>
-                            <option value="0" ${product.status == 0 ? 'selected' : ''}>Ngừng kinh doanh</option>
-                        </select>
-                    </div>
+        <label for="description">Description (Mô tả sản phẩm):</label><br>
+        <textarea id="description" name="description" rows="4" style="width: 380px; padding: 5px;">${product.description}</textarea><br><br>
 
-                    <!-- Upload ảnh mới hoặc đổi ảnh -->
-                    <div class="col-12 border p-3 rounded-3 bg-light">
-                        <label class="form-label fw-bold text-dark"><i class="fa-solid fa-image text-primary me-1"></i> Hình ảnh sản phẩm:</label>
-                        <div class="d-flex align-items-center mb-3">
-                            <span class="text-muted me-3">Ảnh hiện tại:</span>
-                            <c:choose>
-                                <c:when test="${not empty product.images and product.images.startsWith('http')}">
-                                    <img src="${product.images}" class="preview-img" alt="${product.productName}">
-                                </c:when>
-                                <c:when test="${not empty product.images}">
-                                    <img src="${pageContext.request.contextPath}/image?fname=${product.images}" class="preview-img" alt="${product.productName}">
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="${pageContext.request.contextPath}/image?fname=default.file" class="preview-img" alt="Default">
-                                </c:otherwise>
-                            </c:choose>
-                        </div>
+        <label>Status (Trạng thái):</label><br>
+        <input type="radio" id="ston" name="status" value="1" ${product.status == 1 ? 'checked' : ''}>
+        <label for="ston">Hoạt động</label>
+        &nbsp;&nbsp;
+        <input type="radio" id="stoff" name="status" value="0" ${product.status != 1 ? 'checked' : ''}>
+        <label for="stoff">Khóa</label><br><br>
 
-                        <label class="form-label small fw-semibold">Chọn file ảnh mới để thay thế (Upload Multipart):</label>
-                        <input type="file" name="imageFile" class="form-control mb-2" accept="image/*">
-                        <small class="text-muted d-block mb-1">Hoặc thay đổi bằng link ảnh trực tuyến mới:</small>
-                        <input type="url" name="imageLink" value="${product.images.startsWith('http') ? product.images : ''}" class="form-control" placeholder="https://example.com/image.jpg">
-                    </div>
-
-                    <div class="col-12">
-                        <label class="form-label fw-semibold">Mô tả chi tiết sản phẩm:</label>
-                        <textarea name="description" class="form-control" rows="4">${product.description}</textarea>
-                    </div>
-
-                    <div class="col-12 mt-4 text-end">
-                        <a href="${pageContext.request.contextPath}/admin/products" class="btn btn-secondary px-4 me-2">Hủy bỏ</a>
-                        <button type="submit" class="btn btn-primary px-4 fw-semibold">
-                            <i class="fa-solid fa-save me-1"></i> Lưu Cập Nhật
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <input type="submit" value="Update" style="padding: 6px 16px; font-weight: bold;">
+        <input type="reset" value="Reset" style="padding: 6px 16px;">
+    </form>
+    <br>
+    <a href="<c:url value="/admin/products"/>">Quay lại danh sách sản phẩm</a>
 </body>
 </html>
