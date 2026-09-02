@@ -6,14 +6,24 @@ public class Constant {
 
     public static final String DIR = "D:/upload";
     public static final String CATEGORY_UPLOAD_DIR = DIR + "/category";
+    public static final String PRODUCT_UPLOAD_DIR = DIR + "/product";
+    public static final String DEFAULT_FILENAME = "default.file";
+
     public static final String COOKIE_REMEMBER = "username";
     public static final String SESSION_USERNAME = "user";
+
+    // Cấu hình Email gửi OTP qua Gmail SMTP (Sử dụng App Password do bạn cung cấp)
+    public static final String SENDER_EMAIL = System.getProperty("app.sender.email", "24110257@student.hcmute.edu.vn");
+    public static final String SENDER_PASSWORD = System.getProperty("app.sender.password", "walsignkzfiuibgw");
 
     static {
         File dir = new File(CATEGORY_UPLOAD_DIR);
         if (!dir.exists()) {
             dir.mkdirs();
         }
+        File productDir = new File(PRODUCT_UPLOAD_DIR);
+        if (!productDir.exists()) {
+            productDir.mkdirs();
+        }
     }
 }
-

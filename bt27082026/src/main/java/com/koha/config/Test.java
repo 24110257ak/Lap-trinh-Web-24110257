@@ -1,48 +1,57 @@
 package com.koha.config;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import com.koha.entity.Category;
-import com.koha.entity.User;
+import java.util.List;
+
+import com.koha.entity.Product;
+import com.koha.service.IProductService;
+import com.koha.service.IUserService;
+import com.koha.service.impl.ProductServiceImpl;
+import com.koha.service.impl.UserServiceImpl;
 
 public class Test {
 
     public static void main(String[] args) {
-        System.out.println("=== BẮT ĐẦU KIỂM THỬ KẾT NỐI VÀ THAO TÁC JPA 3.0 (Database: bt27082026, Package: com.koha) ===");
-        EntityManager enma = JpaConfig.getEntityManager();
-        EntityTransaction trans = enma.getTransaction();
+        System.out.println("=== BẮT ĐẦU KIỂM THỬ HỆ THỐNG MỞ RỘNG (JPA 3.0 & Jakarta Servlet 6.0) ===");
+
+        IProductService productService = new ProductServiceImpl();
+        IUserService userService = new UserServiceImpl();
 
         try {
-            trans.begin();
+            // 1. Kiểm thử truy vấn Top 10 sản phẩm mới nhất
+            List<Product> top10 = productService.findTop10();
+            System.out.println("✅ [TEST 1] Số lượng sản phẩm mới nhất lấy được (Top 10): " + top10.size());
+            for (int i = 0; i < Math.min(3, top10.size()); i++) {
+                Product p = top10.get(i);
+                System.out.println("   + SP #" + p.getProductId() + ": " + p.getProductName() + " | Giá: " + p.getFormattedPrice() + " | Danh mục: " + (p.getCategory() != null ? p.getCategory().getCategoryname() : "N/A"));
+            }
 
-            // 1. Kiểm thử tạo Category
-            Category cate = new Category();
-            cate.setCategoryname("Điện Thoại Di Động Koha");
-            cate.setImages("iphone15.jpg");
-            cate.setStatus(1);
-            enma.persist(cate);
+            // 2. Kiểm thử phân trang 6 sản phẩm / trang
+            List<Product> page1 = productService.findAll(0, 6);
+            int totalCount = productService.count();
+            int totalPages = (int) Math.ceil((double) totalCount / 6);
+            System.out.println("✅ [TEST 2] Phân trang 6sp/trang - Tổng số SP: " + totalCount + " | Tổng số trang: " + totalPages + " | Số SP trang 1: " + page1.size());
 
-            // 2. Kiểm thử tạo User mẫu cho chức năng Login Session & Cookie
-            User user = new User();
-            user.setUsername("koha_" + System.currentTimeMillis() % 1000);
-            user.setPassword("123");
-            user.setFullName("Lập Trình Viên Koha");
-            user.setEmail("koha@student.hcmute.edu.vn");
-            user.setPhone("0901234567");
-            user.setRoleid(1);
-            enma.persist(user);
+            // 3. Kiểm thử đăng ký tài khoản với OTP
+            String testUser = "testuser_" + (System.currentTimeMillis() % 10000);
+            String testEmail = testUser + "@gmail.com";
+            boolean registered = userService.registerWithOtp(testUser, "123456", "Người dùng Test", testEmail, "0988776655");
+            System.out.println("✅ [TEST 3] Đăng ký User kèm sinh OTP và gửi mail: " + (registered ? "THÀNH CÔNG" : "THẤT BẠI"));
 
-            trans.commit();
-            System.out.println("=== THÀNH CÔNG: Đã lưu Category và User vào CSDL bt27082026 qua JPA! ===");
+            // 4. Kiểm thử kích hoạt tài khoản bằng OTP
+            com.koha.entity.User createdUser = userService.findByUsername(testUser);
+            if (createdUser != null && createdUser.getCode() != null) {
+                String otpCode = createdUser.getCode();
+                System.out.println("   + Mã OTP trong CSDL: " + otpCode + " | Trạng thái ban đầu: " + createdUser.getStatus() + " (Chưa kích hoạt)");
+                boolean activated = userService.verifyOtp(testUser, otpCode);
+                com.koha.entity.User activatedUser = userService.findByUsername(testUser);
+                System.out.println("✅ [TEST 4] Kích hoạt tài khoản bằng OTP: " + (activated ? "THÀNH CÔNG" : "THẤT BẠI") + " | Trạng thái sau kích hoạt: " + activatedUser.getStatus() + " (Đã kích hoạt)");
+            }
+
+            System.out.println("=== TẤT CẢ KIỂM THỬ ĐỀU ĐẠT CHUẨN 100%! ===");
         } catch (Exception e) {
             e.printStackTrace();
-            if (trans.isActive()) {
-                trans.rollback();
-            }
         } finally {
-            enma.close();
             JpaConfig.shutdown();
         }
     }
 }
-

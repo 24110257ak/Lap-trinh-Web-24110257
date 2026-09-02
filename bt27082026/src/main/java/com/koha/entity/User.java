@@ -40,6 +40,12 @@ public class User implements Serializable {
     @Column(name = "roleid")
     private int roleid = 2; // 1: Admin, 2: User
 
+    @Column(name = "status")
+    private int status = 0; // 0: Chưa kích hoạt, 1: Đã kích hoạt
+
+    @Column(name = "code", columnDefinition = "NVARCHAR(10) NULL")
+    private String code; // Mã OTP kích hoạt hoặc quên mật khẩu
+
     public User() {
     }
 
@@ -57,6 +63,18 @@ public class User implements Serializable {
         this.email = email;
         this.phone = phone;
         this.roleid = roleid;
+    }
+
+    public User(int id, String username, String password, String fullName, String email, String phone, int roleid, int status, String code) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.roleid = roleid;
+        this.status = status;
+        this.code = code;
     }
 
     public int getId() {
@@ -115,9 +133,25 @@ public class User implements Serializable {
         this.roleid = roleid;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     @Override
     public String toString() {
-        return "User [id=" + id + ", username=" + username + ", fullName=" + fullName + ", roleid=" + roleid + "]";
+        return "User [id=" + id + ", username=" + username + ", fullName=" + fullName + ", roleid=" + roleid
+                + ", status=" + status + ", code=" + code + "]";
     }
 }
-

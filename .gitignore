@@ -30,3 +30,12 @@ bt27082026/instruction.txt
 # Ignore template directory as requested
 template/
 **/template/
+
+# Ignore root mirrored web assets used by Server Connector
+bt25082026/WEB-INF/
+bt25082026/views/
+bt25082026/views_bootstrap/
+bt27082026/WEB-INF/
+bt27082026/index.jsp
+bt27082026/views/
+bt27082026/views_bootstrap/

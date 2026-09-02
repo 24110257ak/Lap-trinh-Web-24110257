@@ -9,11 +9,23 @@ public interface IUserService {
 
     boolean register(String username, String password, String fullname, String email, String phone);
 
+    boolean registerWithOtp(String username, String password, String fullname, String email, String phone);
+
+    boolean verifyOtp(String username, String otp);
+
+    boolean resendOtp(String username);
+
+    boolean sendForgotPasswordOtp(String account);
+
+    boolean resetPassword(String account, String otp, String newPassword);
+
     boolean checkExistUsername(String username);
 
     boolean checkExistEmail(String email);
 
     User findByUsername(String username);
+
+    User findByEmail(String email);
 
     User findById(int id);
 
@@ -23,4 +35,3 @@ public interface IUserService {
 
     List<User> findAll();
 }
-

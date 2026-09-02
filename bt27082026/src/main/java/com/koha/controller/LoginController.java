@@ -61,6 +61,14 @@ public class LoginController extends HttpServlet {
         User user = userService.login(uname.trim(), pword.trim());
 
         if (user != null) {
+            // Kiểm tra tài khoản đã kích hoạt qua OTP chưa
+            if (user.getStatus() == 0) {
+                req.setAttribute("error", "Tài khoản của bạn chưa được kích hoạt qua OTP!");
+                req.setAttribute("unverifiedUsername", user.getUsername());
+                req.getRequestDispatcher("/views/login.jsp").forward(req, resp);
+                return;
+            }
+
             // 1. Lưu thông tin vào Session (Đăng nhập bằng Session)
             HttpSession session = req.getSession(true);
             session.setAttribute("user", user);

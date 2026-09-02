@@ -101,6 +101,23 @@ public class UserDao implements IUserDao {
     }
 
     @Override
+    public User findByEmail(String email) {
+        EntityManager enma = JpaConfig.getEntityManager();
+        String jpql = "SELECT u FROM User u WHERE u.email = :email";
+        try {
+            TypedQuery<User> query = enma.createQuery(jpql, User.class);
+            query.setParameter("email", email);
+            List<User> list = query.getResultList();
+            if (list == null || list.isEmpty()) {
+                return null;
+            }
+            return list.get(0);
+        } finally {
+            enma.close();
+        }
+    }
+
+    @Override
     public boolean checkExistUsername(String username) {
         User user = findByUsername(username);
         return user != null;
