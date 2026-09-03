@@ -39,6 +39,10 @@ bt2 + 3(27-8-2026-6-9-2026)/WEB-INF/
 bt2 + 3(27-8-2026-6-9-2026)/index.jsp
 bt2 + 3(27-8-2026-6-9-2026)/views/
 bt2 + 3(27-8-2026-6-9-2026)/views_bootstrap/
+bt2 + 3 + 4(27-8-2026-6-9-2026)/WEB-INF/
+bt2 + 3 + 4(27-8-2026-6-9-2026)/index.jsp
+bt2 + 3 + 4(27-8-2026-6-9-2026)/views/
+bt2 + 3 + 4(27-8-2026-6-9-2026)/views_bootstrap/
 
 # Upload directory inside workspace
 uploads/

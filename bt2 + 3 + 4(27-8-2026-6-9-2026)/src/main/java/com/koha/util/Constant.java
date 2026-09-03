@@ -4,11 +4,11 @@ import java.io.File;
 
 public class Constant {
 
-    // Thư mục lưu trữ upload nằm bên trong workspace
-    public static final String DIR = System.getProperty("upload.dir", "d:/lap_trinh_web/bt27082026/uploads");
-    public static final String DIR = System.getProperty("upload.dir", "d:/lap_trinh_web/bt2 + 3(27-8-2026-6-9-2026)/uploads");
+    // Thư mục lưu trữ upload nằm bên trong workspace bt2 + 3 + 4(27-8-2026-6-9-2026)
+    public static final String DIR = System.getProperty("upload.dir", "d:/lap_trinh_web/bt2 + 3 + 4(27-8-2026-6-9-2026)/uploads");
     public static final String CATEGORY_UPLOAD_DIR = DIR + "/category";
     public static final String PRODUCT_UPLOAD_DIR = DIR + "/product";
+    public static final String USER_UPLOAD_DIR = DIR + "/user";
     public static final String DEFAULT_FILENAME = "default.file";
 
     public static final String COOKIE_REMEMBER = "username";
@@ -26,6 +26,10 @@ public class Constant {
         File productDir = new File(PRODUCT_UPLOAD_DIR);
         if (!productDir.exists()) {
             productDir.mkdirs();
+        }
+        File userDir = new File(USER_UPLOAD_DIR);
+        if (!userDir.exists()) {
+            userDir.mkdirs();
         }
     }
 }
