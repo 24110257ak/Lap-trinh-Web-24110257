@@ -8,7 +8,7 @@
     <title>Trang Chủ - Koha Web Store</title>
 </head>
 <body style="font-family: Arial, sans-serif; margin: 20px;">
-    <h2>Koha Web Store - bt2 + 3 (27/8/2026 - 6/9/2026)</h2>
+    <h2>Koha Web Store - bt2 + 3 + 4 (27/8/2026 - 6/9/2026)</h2>
     <div>
         <a href="<c:url value="/home"/>"><b>Trang chủ</b></a> | 
         <a href="<c:url value="/product"/>">Tất cả sản phẩm (Phân trang 6sp/trang)</a> | 
