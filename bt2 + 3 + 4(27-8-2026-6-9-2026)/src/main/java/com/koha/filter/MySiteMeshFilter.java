@@ -22,7 +22,8 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * Filter tương thích hoàn hảo cho Tomcat 11 (Jakarta Servlet 6.0).
  * 1. Khắc phục lỗi "Cannot forward after response has been committed" bằng include().
- * 2. Cấu hình dự phòng an toàn bằng code Java (applyCustomConfiguration) chống lỗi XML parse fail.
+ * 2. Khắc phục lỗi nhân đôi prefix "/WEB-INF/decorators/decorators/web.jsp" bằng setDecoratorPrefix("").
+ * 3. Chuẩn hóa đường dẫn an toàn trong hàm dispatch().
  */
 public class MySiteMeshFilter extends ConfigurableSiteMeshFilter {
 
@@ -36,7 +37,10 @@ public class MySiteMeshFilter extends ConfigurableSiteMeshFilter {
 
     @Override
     protected void applyCustomConfiguration(SiteMeshFilterBuilder builder) {
-        // Cấu hình bằng Java code đảm bảo 100% không bao giờ bị lỗi do XML
+        // Đặt prefix rỗng để không bị sitemesh tự động cộng dồn /WEB-INF/decorators/
+        builder.setDecoratorPrefix("");
+
+        // Cấu hình đường dẫn decorator
         builder.addDecoratorPath("/profile", "/decorators/web.jsp")
                .addDecoratorPath("/user/*", "/decorators/web.jsp")
                .addDecoratorPath("/home", "/decorators/web.jsp")
@@ -69,10 +73,10 @@ public class MySiteMeshFilter extends ConfigurableSiteMeshFilter {
                 new XmlFilterConfigurator(objectFactory, xml).configureFilter(builder);
             }
         } catch (Exception e) {
-            System.err.println("[SiteMesh Warning] XML config not loaded, using programmatic Java config: " + e.getMessage());
+            System.err.println("[SiteMesh Warning] XML config not loaded: " + e.getMessage());
         }
 
-        // Áp dụng cấu hình Java
+        // Áp dụng cấu hình chuẩn
         applyCustomConfiguration(builder);
 
         final boolean includeErrors = builder.isIncludeErrorPages();
@@ -90,10 +94,18 @@ public class MySiteMeshFilter extends ConfigurableSiteMeshFilter {
                     @Override
                     protected void dispatch(HttpServletRequest req, HttpServletResponse res, String path)
                             throws ServletException, IOException {
-                        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
-                        if (dispatcher == null) {
-                            throw new ServletException("Could not find decorator dispatcher for: " + path);
+                        String targetPath = path;
+
+                        // Xử lý loại bỏ nhân đôi prefix nếu có
+                        if (targetPath.contains("/WEB-INF/decorators/decorators/")) {
+                            targetPath = targetPath.replace("/WEB-INF/decorators/decorators/", "/decorators/");
                         }
+
+                        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(targetPath);
+                        if (dispatcher == null) {
+                            dispatcher = getServletContext().getRequestDispatcher("/decorators/web.jsp");
+                        }
+
                         // Dùng include thay vì forward để không bị lỗi IllegalStateException trên Tomcat 11
                         dispatcher.include(req, res);
                     }

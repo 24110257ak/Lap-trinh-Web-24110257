@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemesh>
+    <!-- Thiết lập decorator prefix rỗng -->
+    <decorator-prefix></decorator-prefix>
+
     <!-- Mappings for User Pages -->
     <mapping path="/profile" decorator="/decorators/web.jsp"/>
     <mapping path="/user/*" decorator="/decorators/web.jsp"/>
