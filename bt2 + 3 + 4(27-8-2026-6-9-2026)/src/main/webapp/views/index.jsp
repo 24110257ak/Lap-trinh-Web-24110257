@@ -8,7 +8,7 @@
     <title>Trang Chủ - Koha Web Store</title>
 </head>
 <body style="font-family: Arial, sans-serif; margin: 20px;">
-    <h2>Koha Web Store - bt2 + 3 + 4 (27/8/2026 - 6/9/2026)</h2>
+    <h2>Koha Web Store - bt2 + 3 (27/8/2026 - 6/9/2026)</h2>
     <div>
         <a href="<c:url value="/home"/>"><b>Trang chủ</b></a> | 
         <a href="<c:url value="/product"/>">Tất cả sản phẩm (Phân trang 6sp/trang)</a> | 
@@ -18,7 +18,6 @@
             <c:when test="${not empty sessionScope.user}">
                 Xin chào, <b>${sessionScope.user.fullName}</b> 
                 (<c:choose><c:when test="${sessionScope.user.roleid == 1}">Admin</c:when><c:otherwise>Khách hàng</c:otherwise></c:choose>) | 
-                <a href="<c:url value="/profile"/>"><b>Hồ sơ cá nhân (Profile)</b></a> | 
                 <a href="<c:url value="/logout"/>">Đăng xuất</a>
             </c:when>
             <c:otherwise>

@@ -6,10 +6,10 @@
 
     <display-name>bt2 + 3 + 4(27/8/2026-6/9/2026)</display-name>
 
-    <!-- SiteMesh Decorator 3 Filter -->
+    <!-- SiteMesh Decorator 3 Filter (Tomcat 11 Compatible) -->
     <filter>
         <filter-name>sitemesh</filter-name>
-        <filter-class>org.sitemesh.config.ConfigurableSiteMeshFilter</filter-class>
+        <filter-class>com.koha.filter.MySiteMeshFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>sitemesh</filter-name>

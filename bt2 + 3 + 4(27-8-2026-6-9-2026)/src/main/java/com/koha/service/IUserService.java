@@ -33,7 +33,5 @@ public interface IUserService {
 
     void update(User user);
 
-    boolean updateProfile(int id, String fullname, String phone, String images);
-
     List<User> findAll();
 }
