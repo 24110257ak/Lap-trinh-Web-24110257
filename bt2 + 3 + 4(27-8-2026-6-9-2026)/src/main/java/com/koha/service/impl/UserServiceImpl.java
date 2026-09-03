@@ -177,6 +177,25 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public boolean updateProfile(int id, String fullname, String phone, String images) {
+        User user = userDao.findById(id);
+        if (user != null) {
+            if (fullname != null && !fullname.trim().isEmpty()) {
+                user.setFullName(fullname.trim());
+            }
+            if (phone != null) {
+                user.setPhone(phone.trim());
+            }
+            if (images != null && !images.trim().isEmpty()) {
+                user.setImages(images.trim());
+            }
+            userDao.update(user);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public List<User> findAll() {
         return userDao.findAll();
     }

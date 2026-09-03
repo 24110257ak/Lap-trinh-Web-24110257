@@ -46,6 +46,9 @@ public class User implements Serializable {
     @Column(name = "code", columnDefinition = "NVARCHAR(10) NULL")
     private String code; // Mã OTP kích hoạt hoặc quên mật khẩu
 
+    @Column(name = "images", columnDefinition = "NVARCHAR(500) NULL")
+    private String images; // Ảnh đại diện người dùng
+
     public User() {
     }
 
@@ -147,6 +150,14 @@ public class User implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
     }
 
     @Override

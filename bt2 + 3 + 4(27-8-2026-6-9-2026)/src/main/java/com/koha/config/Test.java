@@ -45,6 +45,12 @@ public class Test {
                 boolean activated = userService.verifyOtp(testUser, otpCode);
                 com.koha.entity.User activatedUser = userService.findByUsername(testUser);
                 System.out.println("✅ [TEST 4] Kích hoạt tài khoản bằng OTP: " + (activated ? "THÀNH CÔNG" : "THẤT BẠI") + " | Trạng thái sau kích hoạt: " + activatedUser.getStatus() + " (Đã kích hoạt)");
+
+                // 5. Kiểm thử cập nhật thông tin cá nhân (Profile: fullname, phone, images) qua JPA
+                boolean profileUpdated = userService.updateProfile(activatedUser.getId(), "Người Dùng Đã Cập Nhật", "0933112233", "user/avatar_test.png");
+                com.koha.entity.User profileUser = userService.findById(activatedUser.getId());
+                System.out.println("✅ [TEST 5] Cập nhật Profile (Họ tên, SĐT, Ảnh đại diện): " + (profileUpdated ? "THÀNH CÔNG" : "THẤT BẠI"));
+                System.out.println("   + Họ tên mới: " + profileUser.getFullName() + " | SĐT: " + profileUser.getPhone() + " | Ảnh: " + profileUser.getImages());
             }
 
             System.out.println("=== TẤT CẢ KIỂM THỬ ĐỀU ĐẠT CHUẨN 100%! ===");
