@@ -5,95 +5,150 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý sản phẩm - JPA</title>
+    <title>Quản Lý Sản Phẩm - Admin Panel</title>
 </head>
 <body>
-    <h2>Quản lý sản phẩm (JPA 3.0 & Hibernate 6.6)</h2>
-    <a href="<c:url value="/admin/product/add"/>">Add Product (Thêm sản phẩm mới)</a> | 
-    <a href="<c:url value="/admin/categories"/>">Quản lý danh mục</a> | 
-    <a href="<c:url value="/home"/>">Trang chủ</a><br>
-    <hr>
+    <!-- Title & Add Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1">
+                <i class="fa-solid fa-boxes-stacked text-primary me-2"></i>Quản Lý Sản Phẩm
+            </h3>
+            <p class="text-muted small mb-0">Hệ thống phân tầng JPA 3.0 & Hibernate 6.6</p>
+        </div>
+        <div>
+            <a href="<c:url value='/admin/product/add'/>" class="btn btn-success shadow-sm">
+                <i class="fa-solid fa-plus me-1"></i>Thêm Sản Phẩm Mới
+            </a>
+        </div>
+    </div>
 
     <!-- Thông báo kết quả -->
     <c:if test="${not empty sessionScope.message}">
-        <p style="color: green; font-weight: bold;">${sessionScope.message}</p>
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i>${sessionScope.message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         <c:remove var="message" scope="session"/>
     </c:if>
     <c:if test="${not empty sessionScope.error}">
-        <p style="color: red; font-weight: bold;">${sessionScope.error}</p>
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>${sessionScope.error}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         <c:remove var="error" scope="session"/>
     </c:if>
 
-    <!-- Tìm kiếm sản phẩm -->
-    <form action="<c:url value="/admin/products"/>" method="get">
-        <label>Tìm kiếm:</label>
-        <input type="text" name="keyword" value="${not empty keyword ? keyword : ''}" placeholder="Nhập tên sản phẩm...">
-        <input type="submit" value="Tìm">
-        <c:if test="${not empty keyword}">
-            <a href="<c:url value="/admin/products"/>">Hủy tìm</a>
-        </c:if>
-    </form>
-    <br>
+    <!-- Search bar -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-3">
+            <form action="<c:url value="/admin/products"/>" method="get" class="row g-2 align-items-center">
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input type="text" name="keyword" class="form-control" value="${not empty keyword ? keyword : ''}" placeholder="Nhập tên sản phẩm cần tìm...">
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                    <c:if test="${not empty keyword}">
+                        <a href="<c:url value="/admin/products"/>" class="btn btn-outline-secondary">Xóa lọc</a>
+                    </c:if>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <table border="1" width="100%" cellpadding="8" cellspacing="0">
-        <thead>
-            <tr bgcolor="#f2f2f2">
-                <th width="50">STT</th>
-                <th width="120">Images</th>
-                <th>Product name</th>
-                <th>Category</th>
-                <th width="120">Price</th>
-                <th width="70">Quantity</th>
-                <th width="100">Status</th>
-                <th width="140">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <c:forEach items="${productList}" var="p" varStatus="STT">
-                <tr>
-                    <td align="center">${STT.index + 1}</td>
-                    <c:choose>
-                        <c:when test="${not empty p.images and (p.images.startsWith('http://') or p.images.startsWith('https://'))}">
-                            <c:url value="${p.images}" var="imgUrl"></c:url>
-                        </c:when>
-                        <c:otherwise>
-                            <c:url value="/image?fname=${p.images}" var="imgUrl"></c:url>
-                        </c:otherwise>
-                    </c:choose>
-                    <td align="center">
-                        <img height="80" width="100" src="${imgUrl}" alt="${p.productName}" style="object-fit: contain;" />
-                    </td>
-                    <td>
-                        <a href="<c:url value='/product/detail?id=${p.productId}'/>" target="_blank">
-                            <b>${p.productName}</b>
-                        </a>
-                    </td>
-                    <td>${p.category.categoryname}</td>
-                    <td align="right" style="color: red; font-weight: bold;">
-                        <fmt:formatNumber value="${p.price}" pattern="#,###"/> đ
-                    </td>
-                    <td align="center">${p.quantity}</td>
-                    <td align="center">
-                        <c:if test="${p.status == 1}">
-                            <span style="color: green; font-weight: bold;">Hoạt động</span>
+    <!-- Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h6 class="fw-bold mb-0 text-secondary">
+                <i class="fa-solid fa-list me-2 text-primary"></i>Danh Sách Sản Phẩm (${productList.size()})
+            </h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle mb-0">
+                    <thead class="table-light text-center">
+                        <tr>
+                            <th style="width: 50px;">STT</th>
+                            <th style="width: 90px;">Hình ảnh</th>
+                            <th class="text-start">Tên sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th class="text-end" style="width: 140px;">Đơn giá</th>
+                            <th style="width: 80px;">Số lượng</th>
+                            <th style="width: 120px;">Trạng thái</th>
+                            <th style="width: 150px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${productList}" var="p" varStatus="STT">
+                            <c:choose>
+                                <c:when test="${not empty p.images and (p.images.startsWith('http://') or p.images.startsWith('https://'))}">
+                                    <c:url value="${p.images}" var="imgUrl"></c:url>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:url value="/image?fname=${p.images}" var="imgUrl"></c:url>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <tr>
+                                <td class="text-center fw-bold">${STT.index + 1}</td>
+                                <td class="text-center">
+                                    <img src="${imgUrl}" alt="${p.productName}" width="60" height="50" style="object-fit: contain;" class="rounded border">
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-dark">${p.productName}</span>
+                                    <div class="text-muted small">ID: #${p.productId}</div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-light text-primary border">${p.category.categoryname}</span>
+                                </td>
+                                <td class="text-end text-danger fw-bold">
+                                    <fmt:formatNumber value="${p.price}" pattern="#,###"/> đ
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-secondary">${p.quantity}</span>
+                                </td>
+                                <td class="text-center">
+                                    <c:choose>
+                                        <c:when test="${p.status == 1}">
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                                <i class="fa-solid fa-check me-1"></i>Đang bán
+                                            </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                                <i class="fa-solid fa-ban me-1"></i>Tạm khóa
+                                            </span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="<c:url value='/admin/product/edit?id=${p.productId}'/>" class="btn btn-outline-warning" title="Chỉnh sửa">
+                                            <i class="fa-solid fa-pen-to-square"></i> Sửa
+                                        </a>
+                                        <a href="<c:url value='/admin/product/delete?id=${p.productId}'/>" class="btn btn-outline-danger" 
+                                           onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm \'${p.productName}\'?')" title="Xóa">
+                                            <i class="fa-solid fa-trash"></i> Xóa
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </c:forEach>
+
+                        <c:if test="${empty productList}">
+                            <tr>
+                                <td colspan="8" class="text-center py-4 text-muted">
+                                    <i class="fa-solid fa-circle-exclamation me-1"></i>Không có sản phẩm nào trong hệ thống.
+                                </td>
+                            </tr>
                         </c:if>
-                        <c:if test="${p.status != 1}">
-                            <span style="color: red; font-weight: bold;">Khóa</span>
-                        </c:if>
-                    </td>
-                    <td align="center">
-                        <a href="<c:url value='/admin/product/edit?id=${p.productId}'/>">Sửa</a>
-                        | 
-                        <a href="<c:url value='/admin/product/delete?id=${p.productId}'/>" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>
-                    </td>
-                </tr>
-            </c:forEach>
-            <c:if test="${empty productList}">
-                <tr>
-                    <td colspan="8" align="center">Không có sản phẩm nào trong hệ thống.</td>
-                </tr>
-            </c:if>
-        </tbody>
-    </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

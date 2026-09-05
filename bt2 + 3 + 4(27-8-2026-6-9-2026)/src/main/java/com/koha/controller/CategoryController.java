@@ -108,16 +108,55 @@ public class CategoryController extends HttpServlet {
             if (categoryname == null) {
                 categoryname = req.getParameter("name");
             }
+            java.util.Map<String, String> errors = new java.util.HashMap<>();
+
+            if (com.koha.util.ValidatorUtil.isEmpty(categoryname)) {
+                errors.put("categoryname", "Tên danh mục không được để trống!");
+            } else if (!com.koha.util.ValidatorUtil.isValidLength(categoryname, 2, 100)) {
+                errors.put("categoryname", "Tên danh mục phải từ 2 đến 100 ký tự!");
+            } else if (cateService.findByCategoryname(categoryname.trim()) != null) {
+                errors.put("categoryname", "Tên danh mục '" + categoryname.trim() + "' đã tồn tại!");
+            }
 
             String statusStr = req.getParameter("status");
-            int status = 1;
-            if (statusStr != null && !statusStr.trim().isEmpty()) {
-                try {
-                    status = Integer.parseInt(statusStr);
-                } catch (NumberFormatException ignored) {}
+            Integer status = com.koha.util.ValidatorUtil.parseIntSafe(statusStr);
+            if (status == null || (status != 0 && status != 1)) {
+                status = 1;
             }
 
             String images = req.getParameter("images");
+            if (com.koha.util.ValidatorUtil.isNotEmpty(images) && !com.koha.util.ValidatorUtil.isValidImageUrl(images)) {
+                errors.put("images", "Đường dẫn ảnh phải bắt đầu bằng http:// hoặc https://!");
+            }
+
+            Part part = null;
+            try {
+                part = req.getPart("images1");
+                if (part == null) {
+                    part = req.getPart("icon");
+                }
+                if (part != null && part.getSize() > 0) {
+                    String subName = part.getSubmittedFileName();
+                    if (subName != null && !com.koha.util.ValidatorUtil.isValidImageExtension(subName)) {
+                        errors.put("imageFile", "Chỉ chấp nhận các định dạng ảnh: .jpg, .jpeg, .png, .gif, .webp!");
+                    }
+                    if (part.getSize() > 10 * 1024 * 1024) {
+                        errors.put("imageFile", "Dung lượng ảnh tối đa là 10MB!");
+                    }
+                }
+            } catch (Exception e) {
+                errors.put("imageFile", "Lỗi tiếp nhận file ảnh: " + e.getMessage());
+            }
+
+            if (!errors.isEmpty()) {
+                req.setAttribute("errors", errors);
+                req.setAttribute("oldCategoryName", categoryname);
+                req.setAttribute("oldStatus", status);
+                req.setAttribute("oldImages", images);
+                req.getRequestDispatcher("/views/admin/category-add.jsp").forward(req, resp);
+                return;
+            }
+
             String fname = "";
             String uploadPath = Constant.DIR;
 
@@ -127,11 +166,6 @@ public class CategoryController extends HttpServlet {
             }
 
             try {
-                Part part = req.getPart("images1");
-                if (part == null) {
-                    part = req.getPart("icon");
-                }
-
                 if (part != null && part.getSize() > 0 && part.getSubmittedFileName() != null && !part.getSubmittedFileName().trim().isEmpty()) {
                     String filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
                     int index = filename.lastIndexOf(".");
@@ -148,11 +182,12 @@ public class CategoryController extends HttpServlet {
             }
 
             Category category = new Category();
-            category.setCategoryname(categoryname);
+            category.setCategoryname(categoryname.trim());
             category.setStatus(status);
             category.setImages(fname);
 
             cateService.insert(category);
+            req.getSession().setAttribute("message", "Thêm danh mục mới thành công!");
             resp.sendRedirect(req.getContextPath() + "/admin/categories");
 
         } else if (url.contains("/admin/category/update") || url.contains("/admin/category/edit")) {
@@ -160,45 +195,85 @@ public class CategoryController extends HttpServlet {
             if (idStr == null) {
                 idStr = req.getParameter("id");
             }
-            int categoryid = Integer.parseInt(idStr);
-
-            String categoryname = req.getParameter("categoryname");
-            if (categoryname == null) {
-                categoryname = req.getParameter("name");
+            Integer categoryid = com.koha.util.ValidatorUtil.parseIntSafe(idStr);
+            if (categoryid == null) {
+                resp.sendRedirect(req.getContextPath() + "/admin/categories");
+                return;
             }
 
-            String statusStr = req.getParameter("status");
-            int status = 1;
-            if (statusStr != null && !statusStr.trim().isEmpty()) {
-                try {
-                    status = Integer.parseInt(statusStr);
-                } catch (NumberFormatException ignored) {}
-            }
-
-            String images = req.getParameter("images");
             Category category = cateService.findById(categoryid);
             if (category == null) {
                 resp.sendRedirect(req.getContextPath() + "/admin/categories");
                 return;
             }
 
-            String fileold = category.getImages();
-            category.setCategoryname(categoryname);
-            category.setStatus(status);
+            String categoryname = req.getParameter("categoryname");
+            if (categoryname == null) {
+                categoryname = req.getParameter("name");
+            }
 
-            String fname = "";
+            java.util.Map<String, String> errors = new java.util.HashMap<>();
+
+            if (com.koha.util.ValidatorUtil.isEmpty(categoryname)) {
+                errors.put("categoryname", "Tên danh mục không được để trống!");
+            } else if (!com.koha.util.ValidatorUtil.isValidLength(categoryname, 2, 100)) {
+                errors.put("categoryname", "Tên danh mục phải từ 2 đến 100 ký tự!");
+            } else {
+                Category exist = cateService.findByCategoryname(categoryname.trim());
+                if (exist != null && exist.getCategoryId() != categoryid) {
+                    errors.put("categoryname", "Tên danh mục '" + categoryname.trim() + "' đã tồn tại!");
+                }
+            }
+
+            String statusStr = req.getParameter("status");
+            Integer status = com.koha.util.ValidatorUtil.parseIntSafe(statusStr);
+            if (status == null || (status != 0 && status != 1)) {
+                status = 1;
+            }
+
+            String images = req.getParameter("images");
+            if (com.koha.util.ValidatorUtil.isNotEmpty(images) && !com.koha.util.ValidatorUtil.isValidImageUrl(images)) {
+                errors.put("images", "Đường dẫn ảnh phải bắt đầu bằng http:// hoặc https://!");
+            }
+
+            Part part = null;
+            try {
+                part = req.getPart("images1");
+                if (part == null) {
+                    part = req.getPart("icon");
+                }
+                if (part != null && part.getSize() > 0) {
+                    String subName = part.getSubmittedFileName();
+                    if (subName != null && !com.koha.util.ValidatorUtil.isValidImageExtension(subName)) {
+                        errors.put("imageFile", "Chỉ chấp nhận các định dạng ảnh: .jpg, .jpeg, .png, .gif, .webp!");
+                    }
+                    if (part.getSize() > 10 * 1024 * 1024) {
+                        errors.put("imageFile", "Dung lượng ảnh tối đa là 10MB!");
+                    }
+                }
+            } catch (Exception e) {
+                errors.put("imageFile", "Lỗi tiếp nhận file ảnh: " + e.getMessage());
+            }
+
+            if (!errors.isEmpty()) {
+                req.setAttribute("errors", errors);
+                category.setCategoryname(categoryname);
+                category.setStatus(status);
+                req.setAttribute("category", category);
+                req.getRequestDispatcher("/views/admin/category-edit.jsp").forward(req, resp);
+                return;
+            }
+
+            String fileold = category.getImages();
+            String fname = fileold;
             String uploadPath = Constant.DIR;
+
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
 
             try {
-                Part part = req.getPart("images1");
-                if (part == null) {
-                    part = req.getPart("icon");
-                }
-
                 if (part != null && part.getSize() > 0 && part.getSubmittedFileName() != null && !part.getSubmittedFileName().trim().isEmpty()) {
                     // Xóa file cũ trên thư mục nếu không phải URL online
                     if (fileold != null && !fileold.startsWith("http") && !fileold.equals("avatar.png")) {
@@ -214,17 +289,19 @@ public class CategoryController extends HttpServlet {
                     String ext = index >= 0 ? filename.substring(index) : ".jpg";
                     fname = System.currentTimeMillis() + ext;
                     part.write(uploadPath + File.separator + fname);
-                    category.setImages(fname);
                 } else if (images != null && !images.trim().isEmpty()) {
-                    category.setImages(images.trim());
-                } else {
-                    category.setImages(fileold);
+                    fname = images.trim();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
+            category.setCategoryname(categoryname.trim());
+            category.setStatus(status);
+            category.setImages(fname);
+
             cateService.update(category);
+            req.getSession().setAttribute("message", "Cập nhật danh mục thành công!");
             resp.sendRedirect(req.getContextPath() + "/admin/categories");
         }
     }

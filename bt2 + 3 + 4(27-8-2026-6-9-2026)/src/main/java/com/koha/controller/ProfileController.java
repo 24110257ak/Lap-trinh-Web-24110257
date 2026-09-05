@@ -66,16 +66,56 @@ public class ProfileController extends HttpServlet {
         String phone = req.getParameter("phone");
         String imageLink = req.getParameter("imageLink");
 
+        java.util.Map<String, String> errors = new java.util.HashMap<>();
+
+        if (com.koha.util.ValidatorUtil.isEmpty(fullname)) {
+            errors.put("fullname", "Họ và tên không được để trống!");
+        } else if (!com.koha.util.ValidatorUtil.isValidLength(fullname, 2, 100)) {
+            errors.put("fullname", "Họ và tên phải từ 2 đến 100 ký tự!");
+        }
+
+        if (com.koha.util.ValidatorUtil.isNotEmpty(phone) && !com.koha.util.ValidatorUtil.isValidPhone(phone)) {
+            errors.put("phone", "Số điện thoại không hợp lệ (cần 10 chữ số, bắt đầu bằng 03, 05, 07, 08, 09)!");
+        }
+
+        if (com.koha.util.ValidatorUtil.isNotEmpty(imageLink) && !com.koha.util.ValidatorUtil.isValidImageUrl(imageLink)) {
+            errors.put("imageLink", "Liên kết ảnh phải bắt đầu bằng http:// hoặc https://!");
+        }
+
         User user = userService.findById(sessionUser.getId());
         if (user == null) {
             user = sessionUser;
+        }
+
+        Part part = null;
+        try {
+            part = req.getPart("imageFile");
+            if (part != null && part.getSize() > 0) {
+                String submittedFileName = part.getSubmittedFileName();
+                if (submittedFileName != null && !com.koha.util.ValidatorUtil.isValidImageExtension(submittedFileName)) {
+                    errors.put("imageFile", "Chỉ chấp nhận các định dạng ảnh: .jpg, .jpeg, .png, .gif, .webp!");
+                }
+                if (part.getSize() > 10 * 1024 * 1024) {
+                    errors.put("imageFile", "Dung lượng ảnh tối đa cho phép là 10MB!");
+                }
+            }
+        } catch (Exception e) {
+            errors.put("imageFile", "Lỗi tiếp nhận file ảnh: " + e.getMessage());
+        }
+
+        if (!errors.isEmpty()) {
+            req.setAttribute("errors", errors);
+            user.setFullName(fullname);
+            user.setPhone(phone);
+            req.setAttribute("user", user);
+            req.getRequestDispatcher("/views/user/profile.jsp").forward(req, resp);
+            return;
         }
 
         String avatarImage = user.getImages();
 
         // 1. Xử lý upload file bằng Multipart (theo giáo trình 10_UploadFile_servlet_jakarta.pdf)
         try {
-            Part part = req.getPart("imageFile");
             if (part != null && part.getSize() > 0) {
                 String originalFileName = getFileName(part);
                 if (originalFileName == null || originalFileName.equals(Constant.DEFAULT_FILENAME) || originalFileName.trim().isEmpty()) {

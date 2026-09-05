@@ -98,7 +98,7 @@
                             <p class="text-muted small">Cập nhật họ tên, số điện thoại và ảnh đại diện của bạn qua JPA & Multipart Upload</p>
                         </div>
                         <div class="card-body pt-3">
-                            <form action="<c:url value='/profile'/>" method="post" enctype="multipart/form-data">
+                            <form action="<c:url value='/profile'/>" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
                                 <div class="row g-3">
                                     <!-- Username (Readonly) -->
                                     <div class="col-md-6">
@@ -117,15 +117,23 @@
                                     <!-- Fullname (Editable) -->
                                     <div class="col-md-6">
                                         <label for="fullname" class="form-label fw-semibold">Họ và tên <span class="text-danger">*</span>:</label>
-                                        <input type="text" class="form-control" id="fullname" name="fullname"
-                                               value="${user.fullName}" required placeholder="Nhập họ và tên..." />
+                                        <input type="text" class="form-control ${not empty errors.fullname ? 'is-invalid' : ''}" id="fullname" name="fullname"
+                                               value="${user.fullName}" required minlength="2" maxlength="100" placeholder="Nhập họ và tên..." />
+                                        <c:if test="${not empty errors.fullname}">
+                                            <div class="invalid-feedback d-block">${errors.fullname}</div>
+                                        </c:if>
+                                        <div class="invalid-feedback">Họ tên bắt buộc từ 2 đến 100 ký tự.</div>
                                     </div>
 
                                     <!-- Phone (Editable) -->
                                     <div class="col-md-6">
                                         <label for="phone" class="form-label fw-semibold">Số điện thoại:</label>
-                                        <input type="tel" class="form-control" id="phone" name="phone"
-                                               value="${user.phone}" placeholder="Ví dụ: 0912345678" />
+                                        <input type="tel" class="form-control ${not empty errors.phone ? 'is-invalid' : ''}" id="phone" name="phone"
+                                               value="${user.phone}" placeholder="Ví dụ: 0912345678" pattern="^(0[3|5|7|8|9])[0-9]{8}$" />
+                                        <c:if test="${not empty errors.phone}">
+                                            <div class="invalid-feedback d-block">${errors.phone}</div>
+                                        </c:if>
+                                        <div class="invalid-feedback">Số điện thoại 10 chữ số hợp lệ (bắt đầu 03, 05, 07, 08, 09).</div>
                                     </div>
 
                                     <div class="col-12"><hr class="my-2"></div>
@@ -135,9 +143,12 @@
                                         <label for="imageFile" class="form-label fw-semibold">
                                             <i class="fa-solid fa-upload me-1 text-primary"></i>Tải lên ảnh đại diện từ máy tính (Multipart):
                                         </label>
-                                        <input type="file" class="form-control" id="imageFile" name="imageFile"
+                                        <input type="file" class="form-control ${not empty errors.imageFile ? 'is-invalid' : ''}" id="imageFile" name="imageFile"
                                                accept="image/*" onchange="previewSelectedImage(this);" />
-                                        <div class="form-text">Được upload và lưu vào thư mục <code>uploads/user/</code> qua Jakarta Servlet Multipart.</div>
+                                        <c:if test="${not empty errors.imageFile}">
+                                            <div class="invalid-feedback d-block">${errors.imageFile}</div>
+                                        </c:if>
+                                        <div class="form-text">Định dạng chấp nhận: .jpg, .jpeg, .png, .gif, .webp (Tối đa 10MB).</div>
                                     </div>
 
                                     <!-- Image URL Option -->
@@ -145,10 +156,14 @@
                                         <label for="imageLink" class="form-label fw-semibold">
                                             <i class="fa-solid fa-link me-1 text-primary"></i>Hoặc dán đường dẫn ảnh Online (URL):
                                         </label>
-                                        <input type="text" class="form-control" id="imageLink" name="imageLink"
+                                        <input type="text" class="form-control ${not empty errors.imageLink ? 'is-invalid' : ''}" id="imageLink" name="imageLink"
                                                placeholder="https://example.com/avatar.jpg"
                                                value="${user.images.startsWith('http') ? user.images : ''}"
                                                oninput="previewImageUrl(this.value);" />
+                                        <c:if test="${not empty errors.imageLink}">
+                                            <div class="invalid-feedback d-block">${errors.imageLink}</div>
+                                        </c:if>
+                                        <div class="form-text">Đường dẫn ảnh phải bắt đầu bằng http:// hoặc https://.</div>
                                     </div>
 
                                     <!-- Submit & Cancel Buttons -->

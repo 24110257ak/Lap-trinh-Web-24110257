@@ -80,19 +80,20 @@ public class MySiteMeshFilter extends ConfigurableSiteMeshFilter {
         // Đặt prefix rỗng để không bị sitemesh tự động cộng dồn /WEB-INF/decorators/
         builder.setDecoratorPrefix("");
 
-        // Cấu hình đường dẫn decorator
-        builder.addDecoratorPath("/profile", "/decorators/web.jsp")
-               .addDecoratorPath("/user/*", "/decorators/web.jsp")
+        // Cấu hình đường dẫn decorator bao bọc toàn bộ hệ thống Bài tập 03
+        builder.addDecoratorPath("/admin/*", "/decorators/admin.jsp")
                .addDecoratorPath("/home", "/decorators/web.jsp")
                .addDecoratorPath("/product", "/decorators/web.jsp")
                .addDecoratorPath("/product/*", "/decorators/web.jsp")
-               .addDecoratorPath("/admin/*", "/decorators/admin.jsp")
-               .addExcludedPath("/login")
-               .addExcludedPath("/register")
-               .addExcludedPath("/verify-otp")
-               .addExcludedPath("/forgot-password")
-               .addExcludedPath("/reset-password")
-               .addExcludedPath("/image");
+               .addDecoratorPath("/profile", "/decorators/web.jsp")
+               .addDecoratorPath("/user/*", "/decorators/web.jsp")
+               .addDecoratorPath("/login", "/decorators/web.jsp")
+               .addDecoratorPath("/register", "/decorators/web.jsp")
+               .addDecoratorPath("/verify-otp", "/decorators/web.jsp")
+               .addDecoratorPath("/forgot-password", "/decorators/web.jsp")
+               .addDecoratorPath("/reset-password", "/decorators/web.jsp")
+               .addExcludedPath("/image")
+               .addExcludedPath("/image/*");
     }
 
     @Override

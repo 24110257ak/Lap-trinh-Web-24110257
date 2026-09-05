@@ -52,8 +52,21 @@ public class LoginController extends HttpServlet {
         String pword = req.getParameter("password");
         String remember = req.getParameter("remember");
 
-        if (uname == null || uname.trim().isEmpty() || pword == null || pword.trim().isEmpty()) {
-            req.setAttribute("error", "Tài khoản hoặc mật khẩu không được rỗng!");
+        java.util.Map<String, String> errors = new java.util.HashMap<>();
+
+        if (com.koha.util.ValidatorUtil.isEmpty(uname)) {
+            errors.put("username", "Vui lòng nhập tên đăng nhập!");
+        } else if (!com.koha.util.ValidatorUtil.isValidUsername(uname)) {
+            errors.put("username", "Tên đăng nhập từ 3 đến 50 ký tự (chữ cái, chữ số, gạch dưới)!");
+        }
+
+        if (com.koha.util.ValidatorUtil.isEmpty(pword)) {
+            errors.put("password", "Vui lòng nhập mật khẩu!");
+        }
+
+        if (!errors.isEmpty()) {
+            req.setAttribute("errors", errors);
+            req.setAttribute("rememberUsername", uname);
             req.getRequestDispatcher("/views/login.jsp").forward(req, resp);
             return;
         }

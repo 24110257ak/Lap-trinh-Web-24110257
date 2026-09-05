@@ -4,36 +4,76 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Quên mật khẩu - JPA 3.0</title>
+    <title>Quên Mật Khẩu - Koha Store</title>
 </head>
-<body style="font-family: Arial, sans-serif; margin: 40px;">
-    <h2>Quên Mật Khẩu</h2>
+<body>
+    <div class="row justify-content-center my-4">
+        <div class="col-md-6 col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4 p-md-5 text-center">
+                    <div class="avatar-lg bg-warning-subtle text-warning rounded-circle d-inline-flex align-items-center justify-content-center p-3 mb-3">
+                        <i class="fa-solid fa-key fa-2x"></i>
+                    </div>
+                    <h3 class="fw-bold text-dark">Quên Mật Khẩu</h3>
+                    <p class="text-muted small">
+                        Nhập tên đăng nhập hoặc email bạn đã đăng ký để nhận mã OTP khôi phục mật khẩu.
+                    </p>
 
-    <c:if test="${not empty error}">
-        <p style="color: red; font-weight: bold;">${error}</p>
-    </c:if>
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-danger alert-dismissible fade show text-start" role="alert">
+                            <i class="fa-solid fa-circle-exclamation me-2"></i>${error}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </c:if>
 
-    <p>Nhập Tên đăng nhập hoặc Email đã đăng ký để nhận mã xác thực OTP đặt lại mật khẩu:</p>
+                    <form action="<c:url value="/forgot-password"/>" method="post" class="needs-validation my-4" novalidate>
+                        <div class="mb-3 text-start">
+                            <label for="account" class="form-label fw-semibold">
+                                Tên đăng nhập hoặc Email <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group has-validation">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-user text-secondary"></i></span>
+                                <input type="text" id="account" name="account" 
+                                       class="form-control" 
+                                       value="${not empty account ? account : ''}" 
+                                       placeholder="vd: nguyenvana hoặc name@example.com" 
+                                       required minlength="3">
+                                <div class="invalid-feedback">Vui lòng nhập tên đăng nhập hoặc email.</div>
+                            </div>
+                        </div>
 
-    <form action="<c:url value="/forgot-password"/>" method="post">
-        <table>
-            <tr>
-                <td><label for="account">Tài khoản hoặc Email:</label></td>
-                <td><input type="text" id="account" name="account" value="${account}" required style="padding: 5px; width: 250px;"></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <br>
-                    <input type="submit" value="Gửi Mã OTP Xác Nhận" style="padding: 6px 20px; font-weight: bold;">
-                </td>
-            </tr>
-        </table>
-    </form>
-    <br>
-    <div>
-        <a href="<c:url value="/login"/>">Quay lại trang Đăng nhập</a> | 
-        <a href="<c:url value="/home"/>">Về trang chủ</a>
+                        <button type="submit" class="btn btn-warning w-100 py-2 fw-bold text-dark shadow-sm">
+                            <i class="fa-solid fa-paper-plane me-2"></i>Gửi Mã Xác Thực OTP
+                        </button>
+                    </form>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3 small">
+                        <a href="<c:url value="/login"/>" class="text-primary text-decoration-none">
+                            <i class="fa-solid fa-arrow-left me-1"></i>Quay lại Đăng nhập
+                        </a>
+                        <a href="<c:url value="/register"/>" class="text-muted text-decoration-none">
+                            Đăng ký tài khoản mới
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
 </body>
 </html>

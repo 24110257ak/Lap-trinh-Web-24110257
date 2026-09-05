@@ -57,8 +57,21 @@ public class VerifyOtpController extends HttpServlet {
 
         String otp = req.getParameter("otp");
 
-        if (username == null || username.trim().isEmpty() || otp == null || otp.trim().isEmpty()) {
-            req.setAttribute("error", "Vui lòng nhập đầy đủ mã xác thực OTP!");
+        if (com.koha.util.ValidatorUtil.isEmpty(username)) {
+            req.setAttribute("error", "Không tìm thấy tên tài khoản cần xác thực! Vui lòng đăng nhập hoặc đăng ký lại.");
+            req.getRequestDispatcher("/views/verify-otp.jsp").forward(req, resp);
+            return;
+        }
+
+        if (com.koha.util.ValidatorUtil.isEmpty(otp)) {
+            req.setAttribute("error", "Vui lòng nhập mã xác thực OTP!");
+            req.setAttribute("username", username);
+            req.getRequestDispatcher("/views/verify-otp.jsp").forward(req, resp);
+            return;
+        }
+
+        if (!com.koha.util.ValidatorUtil.isValidOtp(otp)) {
+            req.setAttribute("error", "Mã xác thực OTP phải gồm đúng 6 chữ số!");
             req.setAttribute("username", username);
             req.getRequestDispatcher("/views/verify-otp.jsp").forward(req, resp);
             return;

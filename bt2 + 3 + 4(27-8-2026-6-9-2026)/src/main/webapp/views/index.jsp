@@ -7,88 +7,154 @@
     <meta charset="UTF-8">
     <title>Trang Chủ - Koha Web Store</title>
 </head>
-<body style="font-family: Arial, sans-serif; margin: 20px;">
-    <h2>Koha Web Store - bt2 + 3 + 4 (27/8/2026 - 6/9/2026)</h2>
-    <div>
-        <a href="<c:url value="/home"/>"><b>Trang chủ</b></a> | 
-        <a href="<c:url value="/product"/>">Tất cả sản phẩm (Phân trang 6sp/trang)</a> | 
-        <a href="<c:url value="/admin/products"/>">Quản lý sản phẩm</a> | 
-        <a href="<c:url value="/admin/categories"/>">Quản lý danh mục</a> | 
-        <c:choose>
-            <c:when test="${not empty sessionScope.user}">
-                Xin chào, <b>${sessionScope.user.fullName}</b> 
-                (<c:choose><c:when test="${sessionScope.user.roleid == 1}">Admin</c:when><c:otherwise>Khách hàng</c:otherwise></c:choose>) | 
-                <a href="<c:url value="/logout"/>">Đăng xuất</a>
-            </c:when>
-            <c:otherwise>
-                <a href="<c:url value="/login"/>">Đăng nhập</a> | 
-                <a href="<c:url value="/register"/>">Đăng ký (OTP)</a>
-            </c:otherwise>
-        </c:choose>
+<body>
+    <!-- Banner Chào Mừng -->
+    <div class="p-4 p-md-5 mb-4 rounded-3 text-bg-primary shadow-sm">
+        <div class="col-md-8 px-0">
+            <h1 class="display-5 fw-bold"><i class="fa-solid fa-store me-2"></i>Koha Web Store</h1>
+            <p class="lead my-3">
+                Hệ thống thương mại điện tử phân tầng MVC - Sử dụng Jakarta Servlet 6.0, JPA 3.0 & Hibernate 6.6, 
+                được trang trí hoàn chỉnh bằng SiteMesh Decorator 3 kết hợp Bootstrap 5.
+            </p>
+            <p class="lead mb-0">
+                <a href="<c:url value='/product'/>" class="btn btn-warning text-dark fw-bold px-4 py-2">
+                    <i class="fa-solid fa-bag-shopping me-2"></i>Khám phá tất cả sản phẩm
+                </a>
+                <c:if test="${empty sessionScope.user}">
+                    <a href="<c:url value='/register'/>" class="btn btn-outline-light ms-2 px-4 py-2">
+                        <i class="fa-solid fa-user-plus me-1"></i>Đăng ký ngay
+                    </a>
+                </c:if>
+            </p>
+        </div>
     </div>
-    <hr>
+
+    <!-- Danh mục sản phẩm nổi bật -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title fw-bold text-secondary mb-3">
+                <i class="fa-solid fa-tags me-2 text-primary"></i>Danh mục sản phẩm
+            </h5>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="<c:url value='/product'/>" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                    Tất cả danh mục
+                </a>
+                <c:forEach items="${listCategory}" var="c">
+                    <a href="<c:url value='/product?categoryId=${c.categoryId}'/>" class="btn btn-light btn-sm rounded-pill px-3 border">
+                        <i class="fa-solid fa-folder me-1 text-warning"></i>${c.categoryname}
+                    </a>
+                </c:forEach>
+            </div>
+        </div>
+    </div>
 
     <!-- 10 Sản phẩm mới nhất -->
-    <h3>🔥 10 Sản phẩm mới nhất</h3>
-    <table border="1" width="100%" cellpadding="8" cellspacing="0">
-        <thead>
-            <tr bgcolor="#f2f2f2">
-                <th width="50">STT</th>
-                <th width="120">Images</th>
-                <th>Tên sản phẩm</th>
-                <th width="180">Danh mục</th>
-                <th width="140">Đơn giá</th>
-                <th width="120">Thao tác</th>
-            </tr>
-        </thead>
-        <tbody>
-            <c:forEach items="${topProducts}" var="p" varStatus="STT">
-                <tr>
-                    <td align="center">${STT.index + 1}</td>
-                    <c:choose>
-                        <c:when test="${not empty p.images and (p.images.startsWith('http://') or p.images.startsWith('https://'))}">
-                            <c:url value="${p.images}" var="imgUrl"></c:url>
-                        </c:when>
-                        <c:otherwise>
-                            <c:url value="/image?fname=${p.images}" var="imgUrl"></c:url>
-                        </c:otherwise>
-                    </c:choose>
-                    <td align="center">
-                        <a href="<c:url value='/product/detail?id=${p.productId}'/>">
-                            <img height="80" width="100" src="${imgUrl}" alt="${p.productName}" style="object-fit: contain;" />
-                        </a>
-                    </td>
-                    <td>
-                        <a href="<c:url value='/product/detail?id=${p.productId}'/>" style="text-decoration: none; color: #0066cc;">
-                            <b>${p.productName}</b>
-                        </a>
-                    </td>
-                    <td>${p.category.categoryname}</td>
-                    <td align="right" style="color: red; font-weight: bold;">
-                        <fmt:formatNumber value="${p.price}" pattern="#,###"/> đ
-                    </td>
-                    <td align="center">
-                        <a href="<c:url value='/product/detail?id=${p.productId}'/>">Xem chi tiết</a>
-                    </td>
-                </tr>
-            </c:forEach>
-        </tbody>
-    </table>
-    <br>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0 text-dark">
+            <i class="fa-solid fa-fire text-danger me-2"></i>10 Sản Phẩm Mới Nhất
+        </h4>
+        <a href="<c:url value='/product'/>" class="text-decoration-none fw-semibold">
+            Xem tất cả (${topProducts.size()}+) &raquo;
+        </a>
+    </div>
 
-    <!-- Danh mục sản phẩm -->
-    <h3>📂 Khám phá theo danh mục</h3>
-    <ul>
-        <c:forEach items="${listCategory}" var="c">
-            <li>
-                <a href="<c:url value='/product?categoryId=${c.categoryId}'/>">
-                    <b>${c.categoryname}</b>
-                </a>
-            </li>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3 mb-4">
+        <c:forEach items="${topProducts}" var="p" varStatus="STT">
+            <c:choose>
+                <c:when test="${not empty p.images and (p.images.startsWith('http://') or p.images.startsWith('https://'))}">
+                    <c:url value="${p.images}" var="imgUrl"></c:url>
+                </c:when>
+                <c:otherwise>
+                    <c:url value="/image?fname=${p.images}" var="imgUrl"></c:url>
+                </c:otherwise>
+            </c:choose>
+
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm product-card transition">
+                    <div class="position-relative bg-white text-center p-3" style="height: 180px;">
+                        <img src="${imgUrl}" class="card-img-top h-100" alt="${p.productName}" style="object-fit: contain;">
+                        <span class="position-absolute top-0 start-0 badge bg-danger m-2">Mới</span>
+                    </div>
+                    <div class="card-body d-flex flex-direction-column flex-column justify-content-between">
+                        <div>
+                            <small class="text-muted text-uppercase fw-semibold" style="font-size: 11px;">
+                                ${p.category.categoryname}
+                            </small>
+                            <h6 class="card-title text-truncate fw-bold mt-1 mb-2" title="${p.productName}">
+                                <a href="<c:url value='/product/detail?id=${p.productId}'/>" class="text-dark text-decoration-none">
+                                    ${p.productName}
+                                </a>
+                            </h6>
+                        </div>
+                        <div>
+                            <div class="text-danger fw-bold fs-6 mb-2">
+                                <fmt:formatNumber value="${p.price}" pattern="#,###"/> đ
+                            </div>
+                            <a href="<c:url value='/product/detail?id=${p.productId}'/>" class="btn btn-outline-primary btn-sm w-100">
+                                <i class="fa-solid fa-eye me-1"></i>Chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </c:forEach>
-    </ul>
+    </div>
 
-    <hr>
-    <p style="color: #666; font-size: 13px;">Bài tập Lập trình Web - Koha (24110257ak) - ĐH Sư Phạm Kỹ Thuật TP.HCM</p>
+    <!-- Bảng chi tiết 10 sản phẩm -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+            <h5 class="card-title fw-bold mb-0 text-secondary">
+                <i class="fa-solid fa-table-list me-2 text-primary"></i>Bảng Tổng Hợp 10 Sản Phẩm Mới Nhất
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center" style="width: 60px;">STT</th>
+                            <th class="text-center" style="width: 100px;">Hình ảnh</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th class="text-end" style="width: 150px;">Đơn giá</th>
+                            <th class="text-center" style="width: 120px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${topProducts}" var="p" varStatus="STT">
+                            <c:choose>
+                                <c:when test="${not empty p.images and (p.images.startsWith('http://') or p.images.startsWith('https://'))}">
+                                    <c:url value="${p.images}" var="imgUrl"></c:url>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:url value="/image?fname=${p.images}" var="imgUrl"></c:url>
+                                </c:otherwise>
+                            </c:choose>
+                            <tr>
+                                <td class="text-center fw-bold">${STT.index + 1}</td>
+                                <td class="text-center">
+                                    <img src="${imgUrl}" alt="${p.productName}" width="60" height="50" style="object-fit: contain;" class="rounded border">
+                                </td>
+                                <td>
+                                    <a href="<c:url value='/product/detail?id=${p.productId}'/>" class="text-decoration-none fw-semibold text-primary">
+                                        ${p.productName}
+                                    </a>
+                                </td>
+                                <td><span class="badge bg-light text-dark border">${p.category.categoryname}</span></td>
+                                <td class="text-end text-danger fw-bold">
+                                    <fmt:formatNumber value="${p.price}" pattern="#,###"/> đ
+                                </td>
+                                <td class="text-center">
+                                    <a href="<c:url value='/product/detail?id=${p.productId}'/>" class="btn btn-sm btn-outline-primary">
+                                        <i class="fa-solid fa-circle-info me-1"></i>Xem
+                                    </a>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

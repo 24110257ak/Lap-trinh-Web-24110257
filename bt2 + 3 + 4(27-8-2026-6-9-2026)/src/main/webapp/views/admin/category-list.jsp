@@ -4,64 +4,138 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý danh mục - JPA</title>
+    <title>Quản Lý Danh Mục - Admin Panel</title>
 </head>
 <body>
-    <h2>Quản lý danh mục (JPA 3.0 & Hibernate 6.6)</h2>
-    <a href="<c:url value="/admin/category/add"/>">Add Category (Thêm danh mục mới)</a> | 
-    <a href="<c:url value="/home"/>">Trang chủ</a><br>
-    <hr>
+    <!-- Title & Add Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1">
+                <i class="fa-solid fa-layer-group text-primary me-2"></i>Quản Lý Danh Mục
+            </h3>
+            <p class="text-muted small mb-0">Hệ thống phân tầng JPA 3.0 & Hibernate 6.6</p>
+        </div>
+        <div>
+            <a href="<c:url value='/admin/category/add'/>" class="btn btn-success shadow-sm">
+                <i class="fa-solid fa-plus me-1"></i>Thêm Danh Mục Mới
+            </a>
+        </div>
+    </div>
 
-    <!-- Tìm kiếm danh mục -->
-    <form action="<c:url value="/admin/categories"/>" method="get">
-        <label>Tìm kiếm:</label>
-        <input type="text" name="keyword" value="${not empty keyword ? keyword : ''}" placeholder="Nhập tên danh mục...">
-        <input type="submit" value="Tìm">
-    </form>
-    <br>
+    <!-- Thông báo kết quả -->
+    <c:if test="${not empty sessionScope.message}">
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i>${sessionScope.message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <c:remove var="message" scope="session"/>
+    </c:if>
+    <c:if test="${not empty sessionScope.error}">
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>${sessionScope.error}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <c:remove var="error" scope="session"/>
+    </c:if>
 
-    <table border="1" width="100%" cellpadding="8" cellspacing="0">
-        <thead>
-            <tr bgcolor="#f2f2f2">
-                <th>STT</th>
-                <th>Images</th>
-                <th>Category name</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <c:forEach items="${listcate}" var="cate" varStatus="STT">
-                <tr>
-                    <td align="center">${STT.index + 1}</td>
-                    <c:choose>
-                        <c:when test="${not empty cate.images and (cate.images.startsWith('http://') or cate.images.startsWith('https://'))}">
-                            <c:url value="${cate.images}" var="imgUrl"></c:url>
-                        </c:when>
-                        <c:otherwise>
-                            <c:url value="/image?fname=${cate.images}" var="imgUrl"></c:url>
-                        </c:otherwise>
-                    </c:choose>
-                    <td align="center">
-                        <img height="100" width="140" src="${imgUrl}" alt="${cate.categoryname}" style="object-fit: contain;" />
-                    </td>
-                    <td><b>${cate.categoryname}</b></td>
-                    <td align="center">
-                        <c:if test="${cate.status == 1}">
-                            <span style="color: green; font-weight: bold;">Hoạt động</span>
+    <!-- Search bar -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-3">
+            <form action="<c:url value="/admin/categories"/>" method="get" class="row g-2 align-items-center">
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input type="text" name="keyword" class="form-control" value="${not empty keyword ? keyword : ''}" placeholder="Nhập tên danh mục cần tìm...">
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                    <c:if test="${not empty keyword}">
+                        <a href="<c:url value="/admin/categories"/>" class="btn btn-outline-secondary">Xóa lọc</a>
+                    </c:if>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h6 class="fw-bold mb-0 text-secondary">
+                <i class="fa-solid fa-list me-2 text-primary"></i>Danh Sách Danh Mục (${listcate.size()})
+            </h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle mb-0">
+                    <thead class="table-light text-center">
+                        <tr>
+                            <th style="width: 60px;">STT</th>
+                            <th style="width: 100px;">Hình ảnh</th>
+                            <th class="text-start">Tên danh mục</th>
+                            <th style="width: 140px;">Trạng thái</th>
+                            <th style="width: 160px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${listcate}" var="cate" varStatus="STT">
+                            <c:choose>
+                                <c:when test="${not empty cate.images and (cate.images.startsWith('http://') or cate.images.startsWith('https://'))}">
+                                    <c:url value="${cate.images}" var="imgUrl"></c:url>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:url value="/image?fname=${cate.images}" var="imgUrl"></c:url>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <tr>
+                                <td class="text-center fw-bold">${STT.index + 1}</td>
+                                <td class="text-center">
+                                    <img src="${imgUrl}" alt="${cate.categoryname}" width="60" height="50" style="object-fit: contain;" class="rounded border">
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-dark">${cate.categoryname}</span>
+                                    <div class="text-muted small">ID: #${cate.categoryId}</div>
+                                </td>
+                                <td class="text-center">
+                                    <c:choose>
+                                        <c:when test="${cate.status == 1}">
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                                <i class="fa-solid fa-check me-1"></i>Hoạt động
+                                            </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                                <i class="fa-solid fa-lock me-1"></i>Đã khóa
+                                            </span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="<c:url value='/admin/category/edit?id=${cate.categoryId}'/>" class="btn btn-outline-warning" title="Chỉnh sửa">
+                                            <i class="fa-solid fa-pen-to-square"></i> Sửa
+                                        </a>
+                                        <a href="<c:url value='/admin/category/delete?id=${cate.categoryId}'/>" class="btn btn-outline-danger" 
+                                           onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục \'${cate.categoryname}\'?');" title="Xóa">
+                                            <i class="fa-solid fa-trash"></i> Xóa
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </c:forEach>
+
+                        <c:if test="${empty listcate}">
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">
+                                    <i class="fa-solid fa-circle-exclamation me-1"></i>Không tìm thấy danh mục nào.
+                                </td>
+                            </tr>
                         </c:if>
-                        <c:if test="${cate.status != 1}">
-                            <span style="color: red; font-weight: bold;">Khóa</span>
-                        </c:if>
-                    </td>
-                    <td align="center">
-                        <a href="<c:url value='/admin/category/edit?id=${cate.categoryId}'/>">Sửa</a>
-                        | 
-                        <a href="<c:url value='/admin/category/delete?id=${cate.categoryId}'/>" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');">Xóa</a>
-                    </td>
-                </tr>
-            </c:forEach>
-        </tbody>
-    </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

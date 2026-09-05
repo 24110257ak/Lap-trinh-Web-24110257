@@ -28,7 +28,7 @@ public class ForgotPasswordController extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         String account = req.getParameter("account");
-        if (account == null || account.trim().isEmpty()) {
+        if (com.koha.util.ValidatorUtil.isEmpty(account)) {
             req.setAttribute("error", "Vui lòng nhập tên đăng nhập hoặc email đã đăng ký!");
             req.getRequestDispatcher("/views/forgot-password.jsp").forward(req, resp);
             return;

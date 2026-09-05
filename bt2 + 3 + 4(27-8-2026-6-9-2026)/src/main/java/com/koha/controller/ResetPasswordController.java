@@ -44,16 +44,28 @@ public class ResetPasswordController extends HttpServlet {
         String newPassword = req.getParameter("newPassword");
         String confirmPassword = req.getParameter("confirmPassword");
 
-        if (account == null || account.trim().isEmpty() || otp == null || otp.trim().isEmpty()
-                || newPassword == null || newPassword.trim().isEmpty()) {
-            req.setAttribute("error", "Vui lòng điền đầy đủ tất cả các trường thông tin!");
+        if (com.koha.util.ValidatorUtil.isEmpty(account)) {
+            req.setAttribute("error", "Không tìm thấy thông tin tài khoản! Vui lòng thực hiện lại từ bước quên mật khẩu.");
+            req.getRequestDispatcher("/views/forgot-password.jsp").forward(req, resp);
+            return;
+        }
+
+        if (com.koha.util.ValidatorUtil.isEmpty(otp) || !com.koha.util.ValidatorUtil.isValidOtp(otp)) {
+            req.setAttribute("error", "Mã OTP phải gồm đúng 6 chữ số!");
+            req.setAttribute("account", account);
+            req.getRequestDispatcher("/views/reset-password.jsp").forward(req, resp);
+            return;
+        }
+
+        if (com.koha.util.ValidatorUtil.isEmpty(newPassword) || !com.koha.util.ValidatorUtil.isValidPassword(newPassword)) {
+            req.setAttribute("error", "Mật khẩu mới phải có tối thiểu 6 ký tự!");
             req.setAttribute("account", account);
             req.getRequestDispatcher("/views/reset-password.jsp").forward(req, resp);
             return;
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            req.setAttribute("error", "Mật khẩu xác nhận không khớp!");
+            req.setAttribute("error", "Mật khẩu xác nhận không khớp với mật khẩu mới!");
             req.setAttribute("account", account);
             req.getRequestDispatcher("/views/reset-password.jsp").forward(req, resp);
             return;
